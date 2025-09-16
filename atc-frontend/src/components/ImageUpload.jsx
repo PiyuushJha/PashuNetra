@@ -26,11 +26,10 @@ function CowImageUpload({ onAnalysisComplete }) {
             const formData = new FormData();
             formData.append('image', selectedImage);
 
-            const response = await fetch('https://pashunetra-y4p4.onrender.com/', {
-                method: 'POST',
-                body: formData
-            });
-
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/analyze`, {
+    method: 'POST',
+    body: formData
+});
             const result = await response.json();
 
             if (result.success) {
