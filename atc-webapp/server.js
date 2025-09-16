@@ -8,33 +8,17 @@ const fs = require('fs').promises;
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const { GoogleGenerativeAI } = require('@google/generative-ai');
+const { GoogleGenAI } = require('@google/genai');
 require('dotenv').config();
 
 // 🤖 Initialize Gemini AI for chatbot (NEW)
-const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
+const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+
+const chatRoutes = require("./routes/chat");  // <-- add this
+app.use("/chat", chatRoutes); 
 
 // Middleware
-const allowedOrigins = [
-  "http://localhost:5173",                     // local dev
-  "https://pashu-netra-sigma.vercel.app/"           // your deployed Vercel frontend
-];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    // allow requests with no origin (like Postman, server-to-server)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      return callback(new Error("Not allowed by CORS"));
-    }
-  },
-  methods: "GET,POST,PUT,DELETE,OPTIONS",
-  allowedHeaders: "Content-Type,Authorization"
-}));
-
-
+app.use(cors());
 app.use(express.json());
 
 // File upload configuration
