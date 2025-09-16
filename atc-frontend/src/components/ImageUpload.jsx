@@ -17,31 +17,35 @@ function CowImageUpload({ onAnalysisComplete }) {
         }
     };
 
-    const handleAnalyze = async () => {
-        if (!selectedImage) return;
+   const handleAnalyze = async () => {
+    if (!selectedImage) return;
 
-        setAnalyzing(true);
+    setAnalyzing(true);
 
-        try {
-            const formData = new FormData();
-            formData.append('image', selectedImage);
+    try {
+        const formData = new FormData();
+        formData.append('image', selectedImage);
 
-           fetch(``${import.meta.env.VITE_BACKEND_URL}/analyze-cow`, {
-  method: "POST",
-  body: formData
-});
-            const result = await response.json();
+        // ✅ Corrected fetch
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/analyze-cow`, {
+            method: "POST",
+            body: formData
+        });
 
-            if (result.success) {
-                // Pass the results to parent component
-                onAnalysisComplete(result);
-            }
-        } catch (error) {
-            console.error('Analysis failed:', error);
-        } finally {
-            setAnalyzing(false);
+        const result = await response.json();
+
+        if (result.success) {
+            // Pass the results to parent component
+            onAnalysisComplete(result);
+        } else {
+            console.error("Backend did not return success:", result);
         }
-    };
+    } catch (error) {
+        console.error('Analysis failed:', error);
+    } finally {
+        setAnalyzing(false);
+    }
+};
 
     return (
         <div className="max-w-2xl mx-auto p-6">
