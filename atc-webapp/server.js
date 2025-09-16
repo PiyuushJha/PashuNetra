@@ -9,11 +9,9 @@ const fs = require('fs').promises;
 const app = express();
 const PORT = process.env.PORT || 3001;
 const { GoogleGenerativeAI } = require('@google/generative-ai');
-
-require('dotenv').config();
-
-// 🤖 Initialize Gemini AI for chatbot (NEW)
-const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const genAI = new GoogleGenerativeAI({
+  apiKey: process.env.GEMINI_API_KEY
+});
 
 const chatRoutes = require("./routes/chat");  // <-- add this
 app.use("/chat", chatRoutes); 
