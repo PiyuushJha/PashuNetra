@@ -8,7 +8,8 @@ const fs = require('fs').promises;
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const { GoogleGenAI } = require('@google/genai');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+
 require('dotenv').config();
 
 // 🤖 Initialize Gemini AI for chatbot (NEW)
