@@ -26,7 +26,7 @@ function CowImageUpload({ onAnalysisComplete }) {
             const formData = new FormData();
             formData.append('image', selectedImage);
 
-            const response = await fetch('http://localhost:3001/analyze-cow', {
+            const response = await fetch('https://pashunetra-y4p4.onrender.com/', {
                 method: 'POST',
                 body: formData
             });
