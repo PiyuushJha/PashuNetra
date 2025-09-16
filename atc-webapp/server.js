@@ -3,7 +3,6 @@ const multer = require('multer');
 const ort = require('onnxruntime-node');
 const Jimp = require('jimp');
 const path = require('path');
-const cors = require('cors');
 const fs = require('fs').promises;
 
 const app = express();
@@ -16,8 +15,18 @@ const genAI = new GoogleGenerativeAI({
 const chatRoutes = require("./routes/chat");  // <-- add this
 app.use("/chat", chatRoutes); 
 
-// Middleware
-app.use(cors());
+const cors = require("cors");
+
+const allowedOrigins = [
+  "http://localhost:5173",          // for local frontend dev
+  "https://pashu-netra-sigma.vercel.app" // your Vercel frontend
+];
+
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 app.use(express.json());
 
 // File upload configuration
