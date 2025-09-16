@@ -26,7 +26,7 @@ function CowImageUpload({ onAnalysisComplete }) {
             const formData = new FormData();
             formData.append('image', selectedImage);
 
-           fetch(`${import.meta.env.VITE_API_URL}/analyze-cow`, {
+           fetch(``${import.meta.env.VITE_BACKEND_URL}/analyze-cow`, {
   method: "POST",
   body: formData
 });
