@@ -7,7 +7,6 @@ const navLinks = [
     { name: "Upload & Analyze", page: "home" },
     { name: "Detailed Report", page: "report" },
     { name: "About ATC", page: "about" },
-    { name: "FutureFeatures", page: "FutureFeatures" },
 
 ];
 
@@ -17,7 +16,7 @@ const Logo = ({ onNavigate }) => (
         onClick={() => onNavigate('home')}
         className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
     >
-        <div className="absolute left-1 top-1/2 transform -translate-y-1/2 w-[150px] h-19">
+        <div className="absolute left-6 top-1/2 transform -translate-y-1/2 w-[150px] h-19">
             <img src={logoo} alt="Logo" className="max-h-full object-contain" />
         </div>
         {/* <span className="text-xl font-bold text-gray-900 dark:text-gray-100">
