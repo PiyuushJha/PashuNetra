@@ -1,7 +1,9 @@
 const express = require('express');
-const multer = require('multer');
+
 const ort = require('onnxruntime-node');
 const Jimp = require('jimp');
+const cors = require("cors");
+const multer = require('multer');
 const path = require('path');
 const fs = require('fs').promises;
 
@@ -15,31 +17,31 @@ const genAI = new GoogleGenerativeAI({
 const chatRoutes = require("./routes/chat");  // <-- add this
 app.use("/chat", chatRoutes); 
 
-const cors = require("cors");
+
 
 const allowedOrigins = [
-  "http://localhost:5173",                // local dev
-  "https://pashu-netra-sigma.vercel.app"  // your Vercel frontend
+  "http://localhost:5173",                 // Local dev
+  "https://pashu-netra-sigma.vercel.app"   // Your Vercel frontend
 ];
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin) return callback(null, true); // allow mobile apps / curl
+    if (!origin) return callback(null, true); // Allow non-browser requests (curl, mobile apps)
     if (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
       return callback(null, true);
     }
     return callback(new Error("CORS not allowed: " + origin));
   },
   methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "Accept"], // ✅ added Accept
+  allowedHeaders: ["Content-Type", "Authorization", "Accept"],
   credentials: true
 }));
 
 
 // File upload configuration
 const upload = multer({
-    dest: 'uploads/',
-    limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
+  dest: path.join(__dirname, "uploads/"),
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB
 });
 
 // Global model session
@@ -572,7 +574,7 @@ Provide a concise, helpful response about cattle analysis, ATC scores, or farmin
 });
 
 // 🔥 MAIN IMAGE ANALYSIS ENDPOINT - Updated for complete integration
-app.post('/analyze-cow', upload.single('image'), async (req, res) => {
+app.post("/analyze-cow", upload.single("image"), async (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({
@@ -687,7 +689,7 @@ app.post('/analyze-cow', upload.single('image'), async (req, res) => {
 });
 
 // 🔥 ENHANCED: DETAILED REPORT ENDPOINT - For ATCReport page
-app.get('/ats-report', async (req, res) => {
+app.get("/report", (req, res) => {
     try {
         if (!latestAnalysisResults) {
             return res.status(404).json({
