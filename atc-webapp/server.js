@@ -18,27 +18,23 @@ app.use("/chat", chatRoutes);
 const cors = require("cors");
 
 const allowedOrigins = [
-  "http://localhost:5173",          
-  "https://pashu-netra-sigma.vercel.app"
+  "http://localhost:5173",                // local dev
+  "https://pashu-netra-sigma.vercel.app"  // your Vercel frontend
 ];
 
 app.use(cors({
   origin: (origin, callback) => {
-    // allow requests with no origin (like curl, Postman)
-    if (!origin) return callback(null, true);
-
-    if (
-      allowedOrigins.includes(origin) ||
-      origin.endsWith(".vercel.app") // allow all vercel domains
-    ) {
+    if (!origin) return callback(null, true); // allow mobile apps / curl
+    if (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
       return callback(null, true);
     }
-
     return callback(new Error("CORS not allowed: " + origin));
   },
   methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  allowedHeaders: ["Content-Type", "Authorization", "Accept"], // ✅ added Accept
+  credentials: true
 }));
+
 
 // File upload configuration
 const upload = multer({
