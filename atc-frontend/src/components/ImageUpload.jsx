@@ -30,7 +30,7 @@ function CowImageUpload({ onAnalysisComplete }) {
                 throw new Error("VITE_BACKEND_URL is not defined in your environment.");
             }
 
-            const response = await fetch(`${backendUrl}/analyze-cow`, {
+            const response = await fetch("https://pashunetra-y4p4.onrender.com/analyze-cow", {
                 method: "POST",
                 body: formData
             });
