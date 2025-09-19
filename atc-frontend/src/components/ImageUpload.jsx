@@ -1,4 +1,4 @@
-// Enhanced Upload Component with Preview
+// Enhanced Upload Component with Preview + Debugging
 import { useState } from 'react';
 
 function CowImageUpload({ onAnalysisComplete }) {
@@ -10,46 +10,54 @@ function CowImageUpload({ onAnalysisComplete }) {
         const file = event.target.files[0];
         if (file) {
             setSelectedImage(file);
-
-            // Create preview URL
-            const previewUrl = URL.createObjectURL(file);
-            setImagePreview(previewUrl);
+            setImagePreview(URL.createObjectURL(file)); // preview
         }
     };
 
-   const handleAnalyze = async () => {
-    if (!selectedImage) return;
+    const handleAnalyze = async () => {
+        if (!selectedImage) return;
+        setAnalyzing(true);
 
-    setAnalyzing(true);
+        try {
+            const formData = new FormData();
+            formData.append('image', selectedImage);
 
-    try {
-        const formData = new FormData();
-        formData.append('image', selectedImage);
+            // 🔎 Debugging env
+            console.log("VITE_BACKEND_URL:", import.meta.env.VITE_BACKEND_URL);
 
-        // ✅ Corrected fetch
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/analyze-cow`, {
-            method: "POST",
-            body: formData
-        });
+            const backendUrl = import.meta.env.VITE_BACKEND_URL;
+            if (!backendUrl) {
+                throw new Error("VITE_BACKEND_URL is not defined in your environment.");
+            }
 
-        const result = await response.json();
+            const response = await fetch(`${backendUrl}/analyze-cow`, {
+                method: "POST",
+                body: formData
+            });
 
-        if (result.success) {
-            // Pass the results to parent component
-            onAnalysisComplete(result);
-        } else {
-            console.error("Backend did not return success:", result);
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.status}`);
+            }
+
+            const result = await response.json();
+
+            if (result.success) {
+                onAnalysisComplete(result);
+            } else {
+                console.error("Backend did not return success:", result);
+                alert("Analysis failed. Please try again.");
+            }
+        } catch (error) {
+            console.error('Analysis failed:', error);
+            alert(`Error: ${error.message}`);
+        } finally {
+            setAnalyzing(false);
         }
-    } catch (error) {
-        console.error('Analysis failed:', error);
-    } finally {
-        setAnalyzing(false);
-    }
-};
+    };
 
     return (
         <div className="max-w-2xl mx-auto p-6">
-            {/* Image Upload Area */}
+            {/* Upload Area */}
             <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-emerald-500 transition-colors">
                 {imagePreview ? (
                     <div className="space-y-4">
@@ -103,3 +111,5 @@ function CowImageUpload({ onAnalysisComplete }) {
         </div>
     );
 }
+
+export default CowImageUpload;
